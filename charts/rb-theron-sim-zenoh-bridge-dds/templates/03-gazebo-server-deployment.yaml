@@ -1,0 +1,79 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gazebo-server
+  labels:
+    app: gazebo-server
+    group: robot-common-group
+    robotType: simulated
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: gazebo-server
+      group: robot-common-group
+      robotType: simulated
+  template:
+    metadata:
+      labels:
+        app: gazebo-server
+        group: robot-common-group
+        robotType: simulated
+    spec:
+      restartPolicy: Always
+      volumes:
+        - name: shared-tmp
+          emptyDir: {}
+       {{- include "zenoh-session-volumes" . }}
+      containers:
+          {{- include "zenoh-bridge" .}}
+        - name: world
+          {{- include "zenoh-env" .}}
+          {{- include "simulation-image" .}}
+          {{- include "lifecycle" .}}
+          ports:
+            - containerPort: {{ .Values.services.gazebo.port }}
+              name: gazebo
+          resources:
+            requests:
+              cpu: 1200m
+              memory: 500Mi
+          volumeMounts:
+            - name: shared-tmp
+              mountPath: /tmp
+            {{- include "zenoh-session-volume-mount" . }}
+          envFrom:
+            {{- include "ros-common-env" . }}
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ .Release.Revision }}-gazebo-server-env
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ .Release.Revision }}-world-env
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ .Release.Revision }}-launcher-world-env
+          {{- include "ros-probes" . }}
+        - name: robot-1
+          {{- include "zenoh-env" .}}
+          {{- include "simulation-image" .}}
+          {{- include "lifecycle" .}}
+          resources:
+            requests:
+              cpu: 300m
+              memory: 150Mi
+          volumeMounts:
+            - name: shared-tmp
+              mountPath: /tmp
+            {{- include "zenoh-session-volume-mount" . }}
+          envFrom:
+            {{- include "ros-common-env" . }}
+            {{- include "robot-1-env" . }}
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ .Release.Revision }}-robot-1-spawner-env
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ .Release.Revision }}-sim-engine-env
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ .Release.Revision }}-launcher-robot-spawner-env
+        {{- include "ros-probes" . }}
+    {{- include "local-affinity" . }}

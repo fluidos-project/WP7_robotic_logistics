@@ -1,0 +1,27 @@
+---
+containers:
+  environment:
+    production: false
+    offload: true
+    disable_healthcheck: false
+ros:
+  rmw: rmw_cyclonedds_cpp
+  discovery: subnet
+  distro: humble
+  images:
+    simulation:
+      registry: "docker.io"
+      project: "robotnik"
+      repository: "robotnik-simulations"
+      flavor: "rb-theron-gazebo"
+      version: 0.3.0-rc07
+  gazebo:
+    map: opil_factory
+services:
+  gazebo:
+    name: robots-gazebo
+    port: 11345
+  zenoh:
+    name: zenoh-router
+    port: 7447
+    proto: TCP

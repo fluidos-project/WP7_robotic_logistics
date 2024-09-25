@@ -1,0 +1,71 @@
+---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zenoh-router-http-nodeport
+spec:
+  selector:
+    app: zenoh-rmw-router
+  type: NodePort
+  ports:
+    - name: http-rest-port
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
+      nodePort: 30007  # Optional: specify a NodePort if needed
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.zenoh.name }}
+spec:
+  ports:
+    - name: zenoh
+      port: {{ .Values.services.zenoh.port }}
+      targetPort: {{ .Values.services.zenoh.port }}
+      protocol: {{ .Values.services.zenoh.proto  }}
+  selector:
+    app: zenoh-rmw-router
+    group: robot-common-group
+    robotType: simulated
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.gazebo.name }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: gazebo
+      port: {{ .Values.services.gazebo.port }}
+      protocol: TCP
+  selector:
+    app: gazebo-server
+    group: robot-common-group
+    robotType: simulated
+---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rviz
+spec:
+  type: ClusterIP
+  ports:
+    - name: websocket
+      port: 8080
+      targetPort: 8080
+    - name: webserver
+      port: 80
+      targetPort: 80
+      protocol: TCP
+    - name: fileserver
+      port: 81
+      targetPort: 81
+      protocol: TCP
+  selector:
+    app: rviz
+    group: robot-common-group
+    robotType: simulated

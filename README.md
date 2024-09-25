@@ -52,6 +52,14 @@ helm upgrade \
  -f values.yaml
 ```
 
+
+## Alternative Deployment
+```
+You can use the `offload-switch-deploy.sh` script to automate the deployment of the `charts/rb-theron-sim-zenoh-bridge-dds`.
+Using such script allows for the offloading demo to be easily performed.
+For more information on how it works, look at the script.
+```
+
 ## Usage
 
 You can command the robot through rviz accessing the ingress Loadbalancer ip or url:
