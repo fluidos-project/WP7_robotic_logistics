@@ -19,12 +19,12 @@ install_fluidos_node() {
     --create-namespace -f consumer-values.yaml \
     --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
     --set networkManager.configMaps.providers.local="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
-    --wait
+    --wait --debug --v=2
 }
 
 # Function to delete the FLUIDOS Node component via helm
 delete_fluidos_node() {
-  helm delete node -n fluidos
+  helm delete node -n fluidos --debug --v=2
 }
 
 # Check for command-line argument
