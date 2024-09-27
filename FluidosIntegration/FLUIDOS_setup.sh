@@ -69,7 +69,7 @@ delete_fluidos_node() {
 }
 
 # Check for command-line argument
-if [ "$#" -ne 1 ]; then
+if [ "$#" -lt 1 ] || [ "$#" -gt 2 ] ; then
   echo "Usage: $0 [apply|delete]"
   exit 1
 fi
