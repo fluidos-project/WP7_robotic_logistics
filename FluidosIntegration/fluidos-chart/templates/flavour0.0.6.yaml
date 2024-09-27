@@ -34,6 +34,6 @@ spec:
     amount: ""
     currency: ""
     period: ""
-  providerID: sample-provider-id
+  providerID: {{.Values.nodes.edge.name}}
   type: k8s-fluidos
 {{- end }}

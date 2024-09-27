@@ -2,13 +2,13 @@
 nodes:
   robot:
     ip: "192.168.11.91"
-    port: "10000"
+    port: "30000"
     name: "cilium1"
   edge:
     ip: "192.168.11.94"
-    port: "10000"
+    port: "30000"
     name: "cluster110"
-  role: edge # or edge
+  role: robot # or edge
 requiredResources:
   cpu: "5000m"
   memory: "8Gi"

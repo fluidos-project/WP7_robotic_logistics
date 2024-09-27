@@ -2,9 +2,9 @@
 
 # Set parameters
 LOCAL_K8S_CLUSTER_CP_IP="192.168.11.91"
-LOCAL_REAR_PORT="10000"
+LOCAL_REAR_PORT="30000"
 REMOTE_K8S_CLUSTER_CP_IP="192.168.11.94"
-REMOTE_REAR_PORT="10000"
+REMOTE_REAR_PORT="30000"
 
 # Function to download the consumer-values.yaml file from the GitHub repository
 download_consumer_values() {

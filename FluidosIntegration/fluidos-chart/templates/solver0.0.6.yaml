@@ -3,7 +3,7 @@
 apiVersion: nodecore.fluidos.eu/v1alpha1
 kind: Solver
 metadata:
-  name: solver-sample2
+  name: solver-sample
   namespace: fluidos
 spec:
   selector:
