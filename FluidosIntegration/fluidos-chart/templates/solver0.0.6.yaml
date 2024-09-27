@@ -1,0 +1,20 @@
+{{- if eq .Values.nodes.role "robot" }}
+---
+apiVersion: nodecore.fluidos.eu/v1alpha1
+kind: Solver
+metadata:
+  name: solver-sample2
+  namespace: fluidos
+spec:
+  selector:
+    rangeSelector:
+      minMemory: {{ .Values.requiredResources.memory }}
+      minCpu: {{ .Values.requiredResources.cpu }}
+      minStorage: {{ .Values.requiredResources.storage }}
+    type: k8s-fluidos
+    architecture: {{.Values.requiredResources.architecture}}
+  intentID: "intent-sample"
+  findCandidate: true
+  reserveAndBuy: true
+  enstablishPeering: true
+{{- end }}

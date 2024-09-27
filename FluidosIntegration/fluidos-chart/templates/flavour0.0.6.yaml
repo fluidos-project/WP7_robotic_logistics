@@ -1,0 +1,36 @@
+{{- if eq .Values.nodes.role "edge" }}s
+apiVersion: nodecore.fluidos.eu/v1alpha1
+kind: Flavour
+metadata:
+  name: flavour-sample
+  namespace: fluidos
+spec:
+  characteristics:
+    architecture: {{.Values.requiredResources.architecture}}
+    cpu: {{.Values.requiredResources.cpu}}
+    ephemeral-storage: {{.Values.requiredResources.ephemeralStorage}}
+    gpu: {{.Values.requiredResources.gpu}}
+    memory: {{.Values.requiredResources.memory}}
+    persistent-storage: {{.Values.requiredResources.storage}}
+  optionalFields:
+    workerID: {{.Values.nodes.edge.name}}
+  owner:
+    domain: fluidos.eu
+    ip: {{ printf "%s:%s" .Values.nodes.edge.ip .Values.nodes.edge.port }}
+    nodeID: {{.Values.nodes.edge.name}}
+  policy:
+    aggregatable:
+      maxCount: 1
+      minCount: 1
+    partitionable:
+      cpuMin: "0"
+      cpuStep: "1"
+      memoryMin: "0"
+      memoryStep: 100Mi
+  price:
+    amount: ""
+    currency: ""
+    period: ""
+  providerID: sample-provider-id
+  type: k8s-fluidos
+{{- end }}

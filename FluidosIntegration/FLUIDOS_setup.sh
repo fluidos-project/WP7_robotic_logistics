@@ -45,11 +45,11 @@ install_fluidos_node() {
   helm repo add fluidos https://fluidos-project.github.io/node/
   download_consumer_values
   
-  helm upgrade --install node fluidos/node --version 0.1.0-rc.1 -n fluidos \
+  helm upgrade --install node fluidos/node -n fluidos \
     --create-namespace -f consumer-values.yaml \
     --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
     --set networkManager.configMaps.providers.local="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
-    --wait --debug --v=2 --version 0.1.0-rc.1
+    --wait --debug --v=2
 }
 
 # Function to delete the FLUIDOS Node component via helm
