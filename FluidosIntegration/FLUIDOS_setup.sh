@@ -11,15 +11,45 @@ download_consumer_values() {
   curl -o consumer-values.yaml https://raw.githubusercontent.com/fluidos-project/node/main/quickstart/utils/consumer-values.yaml
 }
 
+#!/bin/bash
+
+# Variables
+NODE_NAME=$(hostname)
+LABEL_KEY1="node-role.fluidos.eu/worker"
+LABEL_VALUE1="true"
+LABEL_KEY2="node-role.fluidos.eu/resources"
+LABEL_VALUE2="true"
+
+
+declare -A LABELS
+LABELS["node-role.fluidos.eu/worker"]="true"
+LABELS["node-role.fluidos.eu/resources"]="true"
+
+# Loop over the labels and check/add them
+for LABEL_KEY in "${!LABELS[@]}"; do
+  LABEL_VALUE=${LABELS[$LABEL_KEY]}
+  LABEL_EXISTS=$(kubectl get node $NODE_NAME --show-labels | grep "$LABEL_KEY=$LABEL_VALUE")
+
+  if [ -z "$LABEL_EXISTS" ]; then
+    kubectl label node $NODE_NAME $LABEL_KEY=$LABEL_VALUE
+    echo "Label $LABEL_KEY=$LABEL_VALUE added to node $NODE_NAME"
+  else
+    echo "Node $NODE_NAME already has the label $LABEL_KEY=$LABEL_VALUE"
+  fi
+done
+
+
 # Function to install the FLUIDOS Node component via helm
 install_fluidos_node() {
+
   helm repo add fluidos https://fluidos-project.github.io/node/
   download_consumer_values
-  helm install node fluidos/node -n fluidos \
+  
+  helm upgrade --install node fluidos/node --version 0.1.0-rc.1 -n fluidos \
     --create-namespace -f consumer-values.yaml \
     --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
     --set networkManager.configMaps.providers.local="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
-    --wait --debug --v=2
+    --wait --debug --v=2 --version 0.1.0-rc.1
 }
 
 # Function to delete the FLUIDOS Node component via helm
