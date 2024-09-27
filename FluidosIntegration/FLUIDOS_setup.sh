@@ -44,12 +44,23 @@ install_fluidos_node() {
 
   helm repo add fluidos https://fluidos-project.github.io/node/
   download_consumer_values
-  
-  helm upgrade --install node fluidos/node -n fluidos \
-    --create-namespace -f consumer-values.yaml \
-    --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
-    --set networkManager.configMaps.providers.local="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
-    --wait --debug --v=2
+
+  if [ $1 == "robot" ]; then
+    helm upgrade --install node fluidos/node -n fluidos \
+      --create-namespace -f consumer-values.yaml \
+      --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
+      --set networkManager.configMaps.providers.local="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
+      --wait --debug --v=2
+  elif [ $1 == "edge" ]; then
+    helm upgrade --install node fluidos/node -n fluidos \
+      --create-namespace -f consumer-values.yaml \
+      --set networkManager.configMaps.nodeIdentity.ip="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
+      --set networkManager.configMaps.providers.local="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
+      --wait --debug --v=2
+  else
+    echo "Error: Invalid argument. Use 'edge' to install the Edge node or 'robot' to install the Robot node."
+    exit 1
+  fi
 }
 
 # Function to delete the FLUIDOS Node component via helm
@@ -68,7 +79,7 @@ fi
 # Perform action based on the argument
 case "$1" in
   apply)
-    install_fluidos_node
+    install_fluidos_node $2
     ;;
   delete)
     delete_fluidos_node
