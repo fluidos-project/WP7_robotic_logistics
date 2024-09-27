@@ -8,7 +8,7 @@ nodes:
     ip: "192.168.11.94"
     port: "10000"
     name: "cluster110"
-  role: robot # or edge
+  role: edge # or edge
 requiredResources:
   cpu: "5000m"
   memory: "8Gi"
@@ -16,6 +16,7 @@ requiredResources:
   gpu: "0"
   ephemeralStorage: "0"
   architecture: "amd64"
+  maxpods: "100"
 networkManager:
   configMaps:
     nodeIdentity:

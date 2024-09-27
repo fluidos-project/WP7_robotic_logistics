@@ -1,4 +1,4 @@
-{{- if eq .Values.nodes.role "edge" }}s
+{{- if eq .Values.nodes.role "edge" }}
 apiVersion: nodecore.fluidos.eu/v1alpha1
 kind: Flavour
 metadata:
@@ -12,6 +12,7 @@ spec:
     gpu: {{.Values.requiredResources.gpu}}
     memory: {{.Values.requiredResources.memory}}
     persistent-storage: {{.Values.requiredResources.storage}}
+    pods: {{.Values.requiredResources.maxpods}}
   optionalFields:
     workerID: {{.Values.nodes.edge.name}}
   owner:
@@ -27,6 +28,8 @@ spec:
       cpuStep: "1"
       memoryMin: "0"
       memoryStep: 100Mi
+      podsMin: "0"
+      podsStep: "1"
   price:
     amount: ""
     currency: ""
