@@ -19,6 +19,7 @@ if [ "$1" == "delete" ]; then
   exit 0
 else
   ./FLUIDOS_setup.sh apply $1
+  sleep 10 # wait for liqo to be found ready by the fluidos rear controller
   cd fluidos-chart
   ./deploy.sh $1
   exit 0
