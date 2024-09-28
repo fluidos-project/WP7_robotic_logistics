@@ -58,6 +58,8 @@ I want to specify its solver so that it takes all edge nodes available for offlo
 - do I need to do anything on the edge? like advertising a subset of the node?
 - il podfilter mi sembra abbastanza stupido/inutile come filtro
 - quando il solver è creato trova il peering candidate ma può anche fare la allocation e reservation, quando è rimosso le rimuove automaticamente?
+- what is the provider id of a flavour and why does it exist?
+- what does it mean for a flavour to be available? it seems that when I create a flavour this is automatically unavailable
 
 ## Ideas
 1. solver lato consumer needed
