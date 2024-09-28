@@ -16,10 +16,13 @@ if [ "$1" == "delete" ]; then
   ./deploy.sh delete
   cd ..
   ./FLUIDOS_setup.sh delete
+  liqoctl uninstall --verbose --purge --skip-confirm
   exit 0
 else
+  liqoctl install k3s --cluster-name $(hostname)
+  sleep 10
   ./FLUIDOS_setup.sh apply $1
-  sleep 10 # wait for liqo to be found ready by the fluidos rear controller
+  sleep 30 # wait for liqo to be found ready by the fluidos rear controller
   cd fluidos-chart
   ./deploy.sh $1
   exit 0
