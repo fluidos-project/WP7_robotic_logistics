@@ -6,6 +6,8 @@ LOCAL_REAR_PORT="30000"
 REMOTE_K8S_CLUSTER_CP_IP="192.168.11.94"
 REMOTE_REAR_PORT="30000"
 
+FLUIDOS_VERSION="0.0.6" #"0.1.0-rc.1" # "0.0.5"
+
 # Function to download the consumer-values.yaml file from the GitHub repository
 download_consumer_values() {
   curl -o consumer-values.yaml https://raw.githubusercontent.com/fluidos-project/node/main/quickstart/utils/consumer-values.yaml
@@ -46,13 +48,13 @@ install_fluidos_node() {
   download_consumer_values
 
   if [ $1 == "robot" ]; then
-    helm upgrade --install node fluidos/node -n fluidos --version 0.1.0-rc.1 \
-      --create-namespace -f consumer-values.yaml helm \
+    helm upgrade --install node fluidos/node -n fluidos --version $FLUIDOS_VERSION \
+      --create-namespace -f consumer-values.yaml \
       --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
       --set networkManager.configMaps.providers.local="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
       --wait --debug --v=2
   elif [ $1 == "edge" ]; then
-    helm upgrade --install node fluidos/node -n fluidos --version 0.1.0-rc.1 \
+    helm upgrade --install node fluidos/node -n fluidos --version $FLUIDOS_VERSION \
       --create-namespace -f consumer-values.yaml \
       --set networkManager.configMaps.nodeIdentity.ip="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
       --set networkManager.configMaps.providers.local="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
