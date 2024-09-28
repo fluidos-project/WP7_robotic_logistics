@@ -46,13 +46,13 @@ install_fluidos_node() {
   download_consumer_values
 
   if [ $1 == "robot" ]; then
-    helm upgrade --install node fluidos/node -n fluidos \
-      --create-namespace -f consumer-values.yaml \
+    helm upgrade --install node fluidos/node -n fluidos --version 0.1.0-rc.1 \
+      --create-namespace -f consumer-values.yaml helm \
       --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
       --set networkManager.configMaps.providers.local="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
       --wait --debug --v=2
   elif [ $1 == "edge" ]; then
-    helm upgrade --install node fluidos/node -n fluidos \
+    helm upgrade --install node fluidos/node -n fluidos --version 0.1.0-rc.1 \
       --create-namespace -f consumer-values.yaml \
       --set networkManager.configMaps.nodeIdentity.ip="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
       --set networkManager.configMaps.providers.local="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
