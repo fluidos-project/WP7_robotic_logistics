@@ -66,6 +66,7 @@ install_fluidos_node() {
 # Function to delete the FLUIDOS Node component via helm
 delete_fluidos_node() {
   helm delete node -n fluidos --debug --v=2 --wait
+  kubectl delete namespace fluidos
 }
 
 # Check for command-line argument
