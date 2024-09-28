@@ -7,12 +7,12 @@ metadata:
 spec:
   selector:
     architecture: {{.Values.requiredResources.architecture}}
-    rangeSelector:
-      minCpu: {{.Values.requiredResources.cpu}}
-      minEph: {{.Values.requiredResources.ephemeralStorage}}
-      minGpu: {{.Values.requiredResources.gpu}}
-      minMemory: {{.Values.requiredResources.memory}}
-      minStorage: {{.Values.requiredResources.storage}}
+    #rangeSelector:
+    #  minCpu: {{.Values.requiredResources.cpu}}
+    #  minEph: {{.Values.requiredResources.ephemeralStorage}}
+    #  minGpu: {{.Values.requiredResources.gpu}}
+    #  minMemory: {{.Values.requiredResources.memory}}
+    #  minStorage: {{.Values.requiredResources.storage}}
     type: k8s-fluidos
   solverID: solver-sample
   subscribe: false

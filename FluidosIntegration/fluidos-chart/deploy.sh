@@ -9,7 +9,7 @@ deploy_chart() {
 
 # Function to delete the Helm deployment
 delete_chart() {
-  helm delete fluidos-integration
+  helm uninstall fluidos-integration
 }
 
 # Check the value of the first argument

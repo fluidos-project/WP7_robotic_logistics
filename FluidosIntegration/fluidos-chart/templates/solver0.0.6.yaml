@@ -10,7 +10,7 @@ spec:
     rangeSelector:
       minMemory: {{ .Values.requiredResources.memory }}
       minCpu: {{ .Values.requiredResources.cpu }}
-      minStorage: {{ .Values.requiredResources.storage }}
+    #  minStorage: {{ .Values.requiredResources.storage }}
     type: k8s-fluidos
     architecture: {{.Values.requiredResources.architecture}}
   intentID: "intent-sample"
