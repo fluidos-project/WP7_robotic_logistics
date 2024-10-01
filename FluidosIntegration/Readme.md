@@ -60,7 +60,8 @@ I want to specify its solver so that it takes all edge nodes available for offlo
 - quando il solver è creato trova il peering candidate ma può anche fare la allocation e reservation, quando è rimosso le rimuove automaticamente?
 - what is the provider id of a flavour and why does it exist?
 - what does it mean for a flavour to be available? it seems that when I create a flavour this is automatically unavailable
-
+- non dovrebbe piu essere necessario fare l'offload con liqo una volta che uso fluidos? come avviene l'offload esattamente?
+- vedo un intentID ma non vedo un intent CRD da nessuna parte, cosa si intende per intent?
 ## Ideas
 1. solver lato consumer needed
 2. instead of flavour initially you can use an annotation on the node

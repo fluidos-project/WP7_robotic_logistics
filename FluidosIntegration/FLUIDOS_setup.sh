@@ -6,8 +6,8 @@ LOCAL_REAR_PORT="30000"
 REMOTE_K8S_CLUSTER_CP_IP="192.168.11.94"
 REMOTE_REAR_PORT="30000"
 
-FLUIDOS_VERSION="0.0.6" #"0.1.0-rc.1" # "0.0.5"
-
+#FLUIDOS_VERSION="0.0.6" #"0.1.0-rc.1" # "0.0.5"
+FLUIDOS_VERSION="0.1.0-rc.1"
 # Function to download the consumer-values.yaml file from the GitHub repository
 download_consumer_values() {
   curl -o consumer-values.yaml https://raw.githubusercontent.com/fluidos-project/node/main/quickstart/utils/consumer-values.yaml
@@ -52,6 +52,7 @@ install_fluidos_node() {
       --create-namespace -f consumer-values.yaml \
       --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
       --set networkManager.configMaps.providers.local="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
+      --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
       --wait --debug --v=2
   elif [ $1 == "edge" ]; then
     helm upgrade --install node fluidos/node -n fluidos --version $FLUIDOS_VERSION \
@@ -69,6 +70,7 @@ install_fluidos_node() {
 delete_fluidos_node() {
   helm delete node -n fluidos --debug --v=2 --wait
   kubectl delete namespace fluidos
+  kubectl get crd | grep fluidos.eu | awk '{print $1}' | xargs kubectl delete crd
 }
 
 # Check for command-line argument

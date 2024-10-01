@@ -86,7 +86,7 @@ if ! check_helm_deployment_exists "$DEPLOYMENT_NAME"; then
   echo "Deployment not found. Installing it now..."
   echo "Offloading default namespace..."
   liqoctl offload namespace default
-  helm install "$DEPLOYMENT_NAME" "$PATH_TO_FOLDER" --values "$PATH_TO_FOLDER/values.yaml"
+  helm install "$DEPLOYMENT_NAME" "$PATH_TO_FOLDER" --values "$PATH_TO_FOLDER/values.yaml --wait"
   echo "Waiting for deployment $deployment_name to complete its rollout..."
   kubectl rollout status deployment "$deployment_name" -n "$namespace"
 
@@ -106,11 +106,11 @@ fi
 # Monitor for the switch and monitor commands
 while true; do
   read -r -p "Enter command (switch to switch mode, monitor to monitor pods, exit to exit): " cmd
-  if [ "$cmd" == "switch" ]; then
+  if [ "$cmd" == "switch" ] || [ "$cmd" == "s" ] || [ "$cmd" == "sw" ]; then
     handle_switch
-  elif [ "$cmd" == "monitor" ]; then
+  elif [ "$cmd" == "monitor" ] || [ "$cmd" == "m" ] || [ "$cmd" == "mon" ]; then
     kubectl get pods -o=wide
-  elif [ "$cmd" == "exit" ]; then
+  elif [ "$cmd" == "exit" ] || [ "$cmd" == "quit" ] || [ "$cmd" == "q" ]; then
     terminate_deployment
   fi
 done
