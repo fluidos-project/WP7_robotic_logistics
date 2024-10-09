@@ -6,14 +6,14 @@ metadata:
   namespace: fluidos
 spec:
   selector:
-    architecture: {{.Values.requiredResources.architecture}}
+    #architecture: {{.Values.requiredResources.architecture}}
     #rangeSelector:
     #  minCpu: {{.Values.requiredResources.cpu}}
     #  minEph: {{.Values.requiredResources.ephemeralStorage}}
     #  minGpu: {{.Values.requiredResources.gpu}}
     #  minMemory: {{.Values.requiredResources.memory}}
     #  minStorage: {{.Values.requiredResources.storage}}
-    type: k8s-fluidos
+    flavorType: K8Slice
   solverID: solver-sample
   subscribe: false
 {{- end }}

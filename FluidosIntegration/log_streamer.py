@@ -1,3 +1,4 @@
+#!/bin/python3
 import threading
 import time
 from kubernetes import client, config, watch
