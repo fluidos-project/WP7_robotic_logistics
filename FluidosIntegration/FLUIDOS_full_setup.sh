@@ -20,9 +20,13 @@ if [ "$1" == "delete" ]; then
   exit 0
 else
   liqoctl install k3s --cluster-name $(hostname)
-  sleep 10
+  kubectl rollout status -n liqo deployment/liqo-gateway
+  kubectl rollout status -n liqo deployment/liqo-controller-manager
+  kubectl rollout status -n liqo deployment/liqo-proxy
+  kubectl rollout status -n liqo deployment/liqo-crd-replicator
+  kubectl rollout status -n liqo deployment/liqo-auth
+
   ./FLUIDOS_setup.sh apply $1
-  sleep 30 # wait for liqo to be found ready by the fluidos rear controller
   cd fluidos-chart
   ./deploy.sh $1
   exit 0
