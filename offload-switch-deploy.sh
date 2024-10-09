@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit on error
+set -e
+
 # This script deploys the chart using the zenoh-bridge-dds
 # Usage:
 # ./offload-switch-deploy.sh [switch|delete|apply]
@@ -86,7 +89,7 @@ if ! check_helm_deployment_exists "$DEPLOYMENT_NAME"; then
   echo "Deployment not found. Installing it now..."
   echo "Offloading default namespace..."
   liqoctl offload namespace default
-  helm install "$DEPLOYMENT_NAME" "$PATH_TO_FOLDER" --values "$PATH_TO_FOLDER/values.yaml --wait"
+  helm install "$DEPLOYMENT_NAME" "$PATH_TO_FOLDER" --values "$PATH_TO_FOLDER/values.yaml" --wait
   echo "Waiting for deployment $deployment_name to complete its rollout..."
   kubectl rollout status deployment "$deployment_name" -n "$namespace"
 

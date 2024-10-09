@@ -10,6 +10,10 @@
 
 {{- define "zenoh-bridge" }}
         - name: zenoh-bridge-pod
+          resources:
+            limits:
+              cpu: "{{.Values.services.zenoh.bridge.limits.cpu}}"
+              memory: "{{.Values.services.zenoh.bridge.limits.memory}}"
           image:  eclipse/zenoh-bridge-dds:latest
           args: [
             "-m client",

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit on error
-set -e
+#set -e
 
 # Function to check if liqoctl is up and running
 check_liqoctl_status() {
@@ -25,6 +25,7 @@ if [ "$1" != "edge" ] && [ "$1" != "robot" ] && [ "$1" != "delete" ]; then
 fi
 
 if [ "$1" == "delete" ]; then
+
   
   cd fluidos-chart
   ./deploy.sh delete
@@ -45,10 +46,9 @@ else
   liqoctl install k3s --cluster-name $(hostname)
 
   check_liqoctl_status
-  sleep 5
 
   ./FLUIDOS_setup.sh apply $1
-  sleep 5
+  sleep 15
   cd fluidos-chart
   ./deploy.sh $1
   exit 0

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit on error
+# set -e
+
 # Set parameters
 LOCAL_K8S_CLUSTER_CP_IP="192.168.11.91"
 LOCAL_REAR_PORT="30000"

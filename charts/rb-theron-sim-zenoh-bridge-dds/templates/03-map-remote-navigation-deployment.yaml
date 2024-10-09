@@ -34,9 +34,9 @@ spec:
           {{- include "simulation-image" .}}
           {{- include "lifecycle" .}}
           resources:
-            requests:
-              cpu: 1200m
-              memory: 200Mi
+            limits:
+              cpu: 2800m
+              memory: 4000Mi
           volumeMounts:
             {{- include "zenoh-session-volume-mount" . }}
           envFrom:

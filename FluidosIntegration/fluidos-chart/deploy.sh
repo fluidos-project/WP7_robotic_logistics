@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 # Function to deploy the Helm chart with the specified role
 deploy_chart() {
   local role=$1

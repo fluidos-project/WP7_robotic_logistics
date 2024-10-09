@@ -25,3 +25,7 @@ services:
     name: zenoh-router
     port: 7447
     proto: TCP
+    bridge:
+      limits:
+        cpu: 1200m
+        memory: 200Mi
