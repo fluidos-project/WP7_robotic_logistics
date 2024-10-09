@@ -25,7 +25,11 @@ if [ "$1" != "edge" ] && [ "$1" != "robot" ] && [ "$1" != "delete" ]; then
 fi
 
 if [ "$1" == "delete" ]; then
-
+  offloaded_namespaces=$(kubectl get namespaceoffloadings.offloading.liqo.io -o=yaml | grep namespace: | awk '{print $2}')
+  for namespace in "$offloaded_namespaces"; do
+    echo "deleting offloaded namespace $namespace"
+    liqoctl unoffload namespace $namespace --skip-confirm
+  done
   
   cd fluidos-chart
   ./deploy.sh delete

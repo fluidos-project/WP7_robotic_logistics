@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit on error
-set -e
+#set -e
 
 # This script deploys the chart using the zenoh-bridge-dds
 # Usage:
