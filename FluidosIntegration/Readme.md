@@ -62,6 +62,7 @@ I want to specify its solver so that it takes all edge nodes available for offlo
 - what does it mean for a flavour to be available? it seems that when I create a flavour this is automatically unavailable
 - non dovrebbe piu essere necessario fare l'offload con liqo una volta che uso fluidos? come avviene l'offload esattamente?
 - vedo un intentID ma non vedo un intent CRD da nessuna parte, cosa si intende per intent?
+- FLUIDOS si occupa solo di fare peering? come vengono eliminati i peering? se elimino il solver il peering rimane! se tipo cambio il valore del solver automaticamente il peering viene eliminato?
 ## Ideas
 1. solver lato consumer needed
 2. instead of flavour initially you can use an annotation on the node

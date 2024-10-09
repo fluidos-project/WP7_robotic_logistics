@@ -19,6 +19,11 @@ delete_chart() {
   echo "All resources deleted."
 }
 
+# Function to generate the Helm chart template
+template_chart() {
+  helm template .
+}
+
 # Check the value of the first argument
 case "$1" in
   edge)
@@ -30,8 +35,11 @@ case "$1" in
   delete)
     delete_chart
     ;;
+  template)
+    template_chart
+    ;;
   *)
-    echo "Usage: $0 {edge|robot|delete}"
+    echo "Usage: $0 {edge|robot|delete|template}"
     exit 1
     ;;
 esac

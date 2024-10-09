@@ -12,6 +12,12 @@ if [ "$1" != "edge" ] && [ "$1" != "robot" ] && [ "$1" != "delete" ]; then
 fi
 
 if [ "$1" == "delete" ]; then
+  peers=$(kubectl get -n liqo foreignclusters.discovery.liqo.io | tail -n +2 | awk '{print $1}')
+  echo "current peers: $peers"
+  for peer in $peers; do
+    echo "deleting peer $peer"
+    liqoctl unpeer $peer --skip-confirm
+  done
   cd fluidos-chart
   ./deploy.sh delete
   cd ..
