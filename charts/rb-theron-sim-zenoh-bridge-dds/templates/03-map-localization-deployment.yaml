@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: robot-1-localization
+  labels:
+    app: robot-1-localization
+    group: robot-1
+    robotType: simulated
+    switchOff: enabled
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: robot-1-localization
+      group: robot-1
+      robotType: simulated
+  template:
+    metadata:
+      labels:
+        app: robot-1-localization
+        group: robot-1
+        robotType: simulated
+    spec:
+      restartPolicy: Always
+      
+      volumes:
+       {{- include "zenoh-session-volumes" . }}
+      containers:
+          {{- include "zenoh-bridge" .}}
+        - name: world
+          {{- include "zenoh-env" .}}
+          {{- include "simulation-image" .}}
+          {{- include "lifecycle" .}}
+          resources:
+            requests:
+              cpu: 500m
+              memory: 80Mi
+          volumeMounts:
+            {{- include "zenoh-session-volume-mount" . }}
+          envFrom:
+            {{- include "ros-common-env" . }}
+            {{- include "robot-1-env" . }}
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ .Release.Revision }}-world-env
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ .Release.Revision }}-launcher-localization-env
+          {{- include "ros-probes" . }}
+      {{- include "local-affinity" . }}

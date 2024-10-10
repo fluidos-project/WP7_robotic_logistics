@@ -1,0 +1,7 @@
+---
+Robotnik Automation S.L.
+
+RB-THERON simulation deployed
+ROS distribution: {{ .Values.ros.distro }}
+ROS RWM: {{ .Values.ros.rmw }}
+---

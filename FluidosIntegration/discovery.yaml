@@ -1,0 +1,17 @@
+apiVersion: advertisement.fluidos.eu/v1alpha1
+kind: Discovery
+metadata:
+  name: discovery-sample
+  namespace: fluidos
+spec:
+  selector:
+    #architecture: amd64
+    #rangeSelector:
+    #  minCpu: 5000m
+    #  minEph: 0
+    #  minGpu: 0
+    #  minMemory: 8Gi
+    #  minStorage: 8Gi
+    flavorType: K8Slice
+  solverID: solver-sample
+  subscribe: false

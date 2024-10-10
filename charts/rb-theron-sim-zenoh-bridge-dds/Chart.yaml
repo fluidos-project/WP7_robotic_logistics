@@ -1,0 +1,11 @@
+---
+name: rb-theron-sim
+description: Robotnik RB-THERON Simulation on ROS2
+version: 0.0.1
+apiVersion: v2
+keywords:
+  - ros2
+  - rb-theron
+  - zenoh
+sources:
+home:

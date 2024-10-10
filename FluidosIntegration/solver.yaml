@@ -1,0 +1,34 @@
+---
+# Source: FluidosIntegration/templates/solver.yaml
+apiVersion: nodecore.fluidos.eu/v1alpha1
+kind: Solver
+metadata:
+  name: solver-sample
+  namespace: fluidos
+spec:
+  selector:
+    flavorType: K8Slice
+    filters:
+      # The architectureFilter is used to filter the Flavors (FLUIDOS nodes) based on the Architecture
+      architectureFilter:
+        # This filter specifies that the Flavors (FLUIDOS nodes) should have the x86_64 architecture
+        # In demo environments, be careful with the architecture, it may be different
+        name: Match
+        data:
+          value: amd64
+      # The cpuFilter is used to filter the Flavors (FLUIDOS nodes) based on the CPU
+      cpuFilter:
+        # This filter specifies that the Flavors (FLUIDOS nodes) should have at least 100m of CPU
+        name: Range
+        data:
+          min: 5000m
+      # The memoryFilter is used to filter the Flavors (FLUIDOS nodes) based on the Memory
+      memoryFilter:
+        # This filter specifies that the Flavors (FLUIDOS nodes) should have at least 1Gi of Memory, but no more than 100Gi
+        name: Range
+        data:
+          min: 8Gi
+  intentID: "intent-sample"
+  findCandidate: true # uses the peering candidates discovered during the discovery process# rear/fluidos
+  reserveAndBuy: true # takes the first available found # rear/fluidos
+  establishPeering: true # fluidos

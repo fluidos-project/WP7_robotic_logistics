@@ -1,0 +1,213 @@
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-zenoh-session-env
+data:
+  ZENOH_SESSION_CONFIG_URI: /zenoh-sessions.config.json
+
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-zenoh-router-env
+data:
+  ZENOH_ROUTER_CONFIG_URI: /home/robot/config/zenoh-router.config.json
+  RUST_LOG: zenoh=info
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-ros-env
+data:
+  ROS_DOMAIN_ID: "35"
+  RMW_IMPLEMENTATION: {{ .Values.ros.rmw }}
+  {{- if eq .Values.ros.distro "humble" }}
+  {{- if eq .Values.ros.discovery "localhost" }}
+  ROS_LOCALHOST_ONLY: 1
+  {{ end }}
+  {{ else }}
+  ROS_AUTOMATIC_DISCOVERY_RANGE: {{ .Values.ros.discovery | upper | quote }}
+  {{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-gazebo-server-env
+data:
+  GUI: "false"
+  GAZEBO_MASTER_URI: http://localhost:{{ .Values.services.gazebo.port }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-gazebo-master-env
+data:
+  GAZEBO_MASTER_URI: http://{{ .Values.services.gazebo.name }}:{{ .Values.services.gazebo.port }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-world-env
+data:
+  MAP_NAME: {{ .Values.ros.gazebo.map }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-sim-engine-env
+data:
+  GPU: "false"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-robot-1-id-env
+data:
+  ROBOT_ID: robot
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-robot-1-spawner-env
+data:
+  POS_X: "-0.15"
+  POS_Y: "2.0"
+  POS_Z: "0.1"
+  ROBOT_DESCRIPTION_FILE: dual_laser.urdf.xacro
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-launcher-world-env
+data:
+  HEALTHCHECK_NODES: /gazebo
+  FAKE_SCREEN: "false"
+  ROS_BU_LAUNCH: >-
+    gazebo.launch.py
+    gui:=${GUI}
+    verbose:=true
+    world_name:=${MAP_NAME}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-launcher-robot-spawner-env
+data:
+  CHECK_NODES: "true"
+  HEALTHCHECK_NODES: >-
+    /${ROBOT_ID}/controller_manager
+    /${ROBOT_ID}/front_laser
+    /${ROBOT_ID}/imu
+    /${ROBOT_ID}/robot_state_publisher
+    /${ROBOT_ID}/robotnik_base_control
+    /${ROBOT_ID}/ros_control
+  # HEALTHCHECK_NODES: >-
+  #   /${ROBOT_ID}/controller_manager
+  #   /${ROBOT_ID}/front_laser
+  #   /${ROBOT_ID}/imu
+  #   /${ROBOT_ID}/rear_laser
+  #   /${ROBOT_ID}/robot_state_publisher
+  #   /${ROBOT_ID}/robotnik_base_control
+  #   /${ROBOT_ID}/ros_control
+  NODES_TO_CHECK: /gazebo
+  ROS_BU_LAUNCH: spawn.launch.py
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-launcher-map-server-env
+data:
+  CHECK_NODES: "true"
+  HEALTHCHECK_NODES: >-
+    /${ROBOT_ID}/map_server
+    /${ROBOT_ID}/lifecycle_manager_map_server
+  NODES_TO_CHECK: >-
+    /${ROBOT_ID}/robotnik_base_control
+  ROS_BU_PKG: rb_theron_localization
+  ROS_BU_LAUNCH: map_server.launch.py
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-launcher-localization-env
+data:
+  CHECK_NODES: "true"
+  HEALTHCHECK_NODES: >-
+    /${ROBOT_ID}/amcl
+    /${ROBOT_ID}/lifecycle_manager_localization
+  NODES_TO_CHECK: >-
+    /${ROBOT_ID}/map_server
+    /${ROBOT_ID}/robot_state_publisher
+  ROS_BU_PKG: rb_theron_localization
+  ROS_BU_LAUNCH: amcl.launch.py
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-launcher-laser-merger-env
+data:
+  CHECK_NODES: "true"
+  HEALTHCHECK_NODES: >-
+    /${ROBOT_ID}/laserscan_merger
+  NODES_TO_CHECK: >-
+    /${ROBOT_ID}/front_laser
+    /${ROBOT_ID}/rear_laser
+    /${ROBOT_ID}/robot_state_publisher
+  ROS_BU_PKG: rb_theron_localization
+  ROS_BU_LAUNCH: merge_laser.launch.py
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-launcher-navigation-env
+data:
+  CHECK_NODES: "true"
+  HEALTHCHECK_NODES: >-
+    /${ROBOT_ID}/controller_server
+    /${ROBOT_ID}/smoother_server
+    /${ROBOT_ID}/planner_server
+    /${ROBOT_ID}/behavior_server
+    /${ROBOT_ID}/bt_navigator
+    /${ROBOT_ID}/waypoint_follower
+    /${ROBOT_ID}/velocity_smoother
+    /${ROBOT_ID}/lifecycle_manager_navigation
+  NODES_TO_CHECK: >-
+    /${ROBOT_ID}/robot_state_publisher
+    /${ROBOT_ID}/amcl
+    /${ROBOT_ID}/map_server
+  ROS_BU_PKG: rb_theron_navigation
+  ROS_BU_LAUNCH: default.launch.py
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}-launcher-rviz-env
+data:
+  STARTUP_TYPE: graphical
+  GUI_ZENITY_TEXT: "Launch RViz?"
+  RVIZ_CFG_FILE: /home/robot/config/rb-theron.rviz
+  GUI_COMMAND: >-
+    rviz2
+    -d ${RVIZ_CFG_FILE}
+    --ros-args
+    --remap use_sim_time:=true
