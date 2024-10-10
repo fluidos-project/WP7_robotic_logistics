@@ -54,15 +54,14 @@ install_fluidos_node() {
     helm upgrade --install node fluidos/node -n fluidos --version $FLUIDOS_VERSION \
       --create-namespace -f consumer-values.yaml \
       --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
-      #--set networkManager.configMaps.providers.local="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
-      --set networkManager.configMaps.nodeIdentity.ip="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
       --wait --debug --v=2
+      #--set networkManager.configMaps.providers.local="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
   elif [ $1 == "edge" ]; then
     helm upgrade --install node fluidos/node -n fluidos --version $FLUIDOS_VERSION \
       --create-namespace -f consumer-values.yaml \
-      #--set networkManager.configMaps.nodeIdentity.ip="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
-      --set networkManager.configMaps.providers.local="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
+      --set networkManager.configMaps.nodeIdentity.ip="$REMOTE_K8S_CLUSTER_CP_IP:$REMOTE_REAR_PORT" \
       --wait --debug --v=2
+      #--set networkManager.configMaps.providers.local="$LOCAL_K8S_CLUSTER_CP_IP:$LOCAL_REAR_PORT" \
   else
     echo "Error: Invalid argument. Use 'edge' to install the Edge node or 'robot' to install the Robot node."
     exit 1
