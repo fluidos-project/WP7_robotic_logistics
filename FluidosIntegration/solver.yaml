@@ -29,6 +29,6 @@ spec:
         data:
           min: 8Gi
   intentID: "intent-sample"
-  findCandidate: false # does discovery # rear/fluidos
+  findCandidate: true # uses the peering candidates discovered during the discovery process# rear/fluidos
   reserveAndBuy: true # takes the first available found # rear/fluidos
   establishPeering: true # fluidos

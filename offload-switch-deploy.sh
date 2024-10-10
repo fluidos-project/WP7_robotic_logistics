@@ -58,21 +58,86 @@ wait_for_rollout() {
 # Function to handle the switch command
 handle_switch() {
   if [ "$status" == "LOCAL" ]; then
-      kubectl scale deployment robot-1-navigation --replicas=0 -n default
+      kubectl patch deployment robot-1-navigation -n default --type='json' -p='[{
+        "op": "replace",
+        "path": "/spec/template/spec/affinity",
+        "value": {
+          "nodeAffinity": {
+            "requiredDuringSchedulingIgnoredDuringExecution": {
+              "nodeSelectorTerms": [
+                {
+                  "matchExpressions": [
+                    {
+                      "key": "liqo.io/type",
+                      "operator": "In",
+                      "values": ["virtual-node"]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }]'
       wait_for_rollout robot-1-navigation default
-      kubectl scale deployment robot-1-remote-navigation --replicas=1 -n default
-      wait_for_rollout robot-1-remote-navigation default
       status="REMOTE"
   elif [ "$status" == "REMOTE" ]; then
-      kubectl scale deployment robot-1-remote-navigation --replicas=0 -n default
-      wait_for_rollout robot-1-remote-navigation default
-      kubectl scale deployment robot-1-navigation --replicas=1 -n default
+      kubectl patch deployment robot-1-navigation -n default --type='json' -p='[{
+        "op": "replace",
+        "path": "/spec/template/spec/affinity",
+        "value": {
+          "nodeAffinity": {
+            "requiredDuringSchedulingIgnoredDuringExecution": {
+              "nodeSelectorTerms": [
+                {
+                  "matchExpressions": [
+                    {
+                      "key": "liqo.io/type",
+                      "operator": "NotIn",
+                      "values": ["virtual-node"]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }]'
       wait_for_rollout robot-1-navigation default
       status="LOCAL"    
   else
       echo "Invalid status: $status"
   fi
 }
+
+
+do_charge_robot() {
+  echo "Charging robot, press any key to stop charging..."
+
+  # switch off switchable nodes, which are identified by the switch-off label set to true
+  # Get all deployments with the label switch-off=true
+  deployments=$(kubectl get deployments -l switchOff=enabled -o jsonpath='{.items[*].metadata.name}')
+
+  # Loop through each deployment and patch it to set replicas to 0
+  for deployment in $deployments; do
+    echo "Patching deployment $deployment to set replicas to 0"
+    kubectl patch deployment $deployment --type='json' -p='[{"op": "replace", "path": "/spec/replicas", "value":0}]'
+  done
+
+  # wait for a keypress
+  read -n 1 -s -r -p ""
+
+  # Get all deployments with the label switch-off=true
+  deployments=$(kubectl get deployments -l switchOff=enabled -o jsonpath='{.items[*].metadata.name}')
+
+  # Loop through each deployment and patch it to set replicas to 0
+  for deployment in $deployments; do
+    echo "Patching deployment $deployment to set replicas to 1"
+    kubectl patch deployment $deployment --type='json' -p='[{"op": "replace", "path": "/spec/replicas", "value":1}]'
+  done
+}
+
+
 
 # Function to handle termination
 terminate_deployment() {
@@ -87,8 +152,8 @@ trap terminate_deployment SIGINT SIGTERM
 # Start the deployment
 if ! check_helm_deployment_exists "$DEPLOYMENT_NAME"; then
   echo "Deployment not found. Installing it now..."
-  echo "Offloading default namespace..."
-  liqoctl offload namespace default
+  #echo "Offloading default namespace..."
+  #liqoctl offload namespace default
   helm install "$DEPLOYMENT_NAME" "$PATH_TO_FOLDER" --values "$PATH_TO_FOLDER/values.yaml" --wait
   echo "Waiting for deployment $deployment_name to complete its rollout..."
   kubectl rollout status deployment "$deployment_name" -n "$namespace"
@@ -108,11 +173,13 @@ fi
 
 # Monitor for the switch and monitor commands
 while true; do
-  read -r -p "Enter command (switch to switch mode, monitor to monitor pods, exit to exit): " cmd
+  read -r -p "Enter command (switch to switch mode, monitor to monitor pods, charge to charge, exit to exit): " cmd
   if [ "$cmd" == "switch" ] || [ "$cmd" == "s" ] || [ "$cmd" == "sw" ]; then
     handle_switch
   elif [ "$cmd" == "monitor" ] || [ "$cmd" == "m" ] || [ "$cmd" == "mon" ]; then
     kubectl get pods -o=wide
+  elif [ "$cmd" == "charge" ] || [ "$cmd" == "c" ]; then
+    do_charge_robot
   elif [ "$cmd" == "exit" ] || [ "$cmd" == "quit" ] || [ "$cmd" == "q" ]; then
     terminate_deployment
   fi
