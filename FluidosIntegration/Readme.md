@@ -3,33 +3,6 @@
 # to retrieve the schema for the solver
 kubectl get crd solvers.nodecore.fluidos.eu -o yaml
 
-# downgraded to 0.0.6
-I had to go back to version 0.0.6 of rear because 0.1.0 gives me problems with the yaml.
-
-# BUGS
-1. wrong solver example here: 
-    - https://github.com/fluidos-project/node/blob/main/deployments/node/samples/solver-custom.yaml
-    - this solver does not coincide with any of the schemas I got for both 0.1.0 and 0.0.6 with this command: `kubectl get crd solvers.nodecore.fluidos.eu -o yaml`
-2. version 0.1.0 fails to validate this perfectly valid solver:
-```
-kind: Solver
-metadata:
-  name: solver-sample2
-  namespace: fluidos
-spec:
-  selector:
-    rangeSelector:
-      minMemory: "6Gi"
-      minCpu: "5000m"
-      minStorage: "10Gi"
-    type: k8s-fluidos
-    architecture: amd64
-  intentID: "intent-sample"
-  findCandidate: true
-  reserveAndBuy: true
-  enstablishPeering: true
-```
-telling me that the spec.selector.architecture and the spec.selector.type are required fields, but clearly they are present.
 
 
 ## Behaviour to achieve
@@ -53,20 +26,20 @@ I want to specify its solver so that it takes all edge nodes available for offlo
 
 
 ## Questions:
-- the liqo affinity  trick that I used before, does it work in fluidos too? (probably not, in fluidos there should be an orchestrator)
-- what about the fluidos node orchestrator? does it exist at least in part? I would like to move the workload according to a logic if I can
-- do I need to do anything on the edge? like advertising a subset of the node?
+- come facciamo a spostare un pod usando fluidos ed evitando la replica a zero?
+
+  - what about the fluidos meta orchestrator? does it exist at least in part? I would like to move the workload according to a logic if I can
+
+- dobbiamo creare un flavour o cosi va gia bene.
+
 - il podfilter mi sembra abbastanza stupido/inutile come filtro
-- quando il solver è creato trova il peering candidate ma può anche fare la allocation e reservation, quando è rimosso le rimuove automaticamente?
-- what is the provider id of a flavour and why does it exist?
+- come fa fluidos a rimuovere il peering?
 - what does it mean for a flavour to be available? it seems that when I create a flavour this is automatically unavailable
-- non dovrebbe piu essere necessario fare l'offload con liqo una volta che uso fluidos? come avviene l'offload esattamente?
+
 - vedo un intentID ma non vedo un intent CRD da nessuna parte, cosa si intende per intent?
+- come fa fluidos ad offloadare un namespace?
 - FLUIDOS si occupa solo di fare peering? come vengono eliminati i peering? se elimino il solver il peering rimane! se tipo cambio il valore del solver automaticamente il peering viene eliminato?
-## Ideas
-1. solver lato consumer needed
-2. instead of flavour initially you can use an annotation on the node
-3. reservation, purchase and allocation (should happen automatically)
+
 
 
 

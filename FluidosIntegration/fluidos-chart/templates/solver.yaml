@@ -29,7 +29,7 @@ spec:
         data:
           min: {{.Values.requiredResources.memory}}
   intentID: "intent-sample"
-  findCandidate: true
-  reserveAndBuy: true
-  establishPeering: true
+  findCandidate: true # does discovery # rear/fluidos
+  reserveAndBuy: true # takes the first available found # rear/fluidos
+  establishPeering: true # fluidos
 {{- end }}
