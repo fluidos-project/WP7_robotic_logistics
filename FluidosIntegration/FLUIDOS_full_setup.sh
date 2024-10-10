@@ -50,9 +50,10 @@ if [ "$1" == "delete" ]; then
   done
   
   # delete fluidos deployment (solver and discovery)
-  cd fluidos-chart
-  ./deploy.sh delete
-  cd ..
+  #cd fluidos-chart
+  #./deploy.sh delete
+  #cd ..
+  kubectl delete -f solver.yaml
   ./FLUIDOS_setup.sh delete
   
   # removing existing peers to allow for liqo to be uninstalled
@@ -89,7 +90,10 @@ else
   #    check_logs $deployment "${DEPLOYMENTS[$deployment]}"
   #done
   sleep 15 # need to wait for the fluidos daemon to say that liqo is ready
-  cd fluidos-chart
-  ./deploy.sh $1
+
+
+  # applying the fluidos chart manually now
+  #cd fluidos-chart
+  #./deploy.sh $1
   exit 0
 fi

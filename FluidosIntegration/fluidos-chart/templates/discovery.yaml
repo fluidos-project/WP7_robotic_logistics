@@ -1,19 +1,19 @@
-#{{- if eq .Values.nodes.role "robot" }}
-#apiVersion: advertisement.fluidos.eu/v1alpha1
-#kind: Discovery
-#metadata:
-#  name: discovery-sample
-#  namespace: fluidos
-#spec:
-#  selector:
-#    #architecture: {{.Values.requiredResources.architecture}}
-#    #rangeSelector:
-#    #  minCpu: {{.Values.requiredResources.cpu}}
-#    #  minEph: {{.Values.requiredResources.ephemeralStorage}}
-#    #  minGpu: {{.Values.requiredResources.gpu}}
-#    #  minMemory: {{.Values.requiredResources.memory}}
-#    #  minStorage: {{.Values.requiredResources.storage}}
-#    flavorType: K8Slice
-#  solverID: solver-sample
-#  subscribe: false
-#{{- end }}
+{{- if eq .Values.nodes.role "robot" }}
+apiVersion: advertisement.fluidos.eu/v1alpha1
+kind: Discovery
+metadata:
+  name: discovery-sample
+  namespace: fluidos
+spec:
+  selector:
+    #architecture: {{.Values.requiredResources.architecture}}
+    #rangeSelector:
+    #  minCpu: {{.Values.requiredResources.cpu}}
+    #  minEph: {{.Values.requiredResources.ephemeralStorage}}
+    #  minGpu: {{.Values.requiredResources.gpu}}
+    #  minMemory: {{.Values.requiredResources.memory}}
+    #  minStorage: {{.Values.requiredResources.storage}}
+    flavorType: K8Slice
+  solverID: solver-sample
+  subscribe: false
+{{- end }}
